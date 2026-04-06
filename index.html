@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="dark">
+<title>Ken's Training Plan</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0d0f;
+    --surface: #141417;
+    --surface2: #1c1c21;
+    --border: #2a2a32;
+    --accent: #e8ff47;
+    --accent2: #47c4ff;
+    --accent3: #ff6b47;
+    --text: #f0f0f0;
+    --muted: #666;
+    --push: #ff6b47;
+    --pull: #47c4ff;
+    --legs: #b47fff;
+    --rest: #444;
+    --golf: #5dbd7a;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { background: #0d0d0f; color-scheme: dark; }
+
+  body {
+    background: #0d0d0f !important;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    padding: 0 0 60px;
+  }
+
+  header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 36px 40px 28px;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 260px; height: 260px;
+    background: radial-gradient(circle, rgba(232,255,71,0.07) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .header-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  header h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(44px, 8vw, 72px);
+    letter-spacing: 0.04em;
+    line-height: 0.95;
+    color: var(--text);
+  }
+  header h1 span { color: var(--accent); }
+  .header-sub {
+    margin-top: 12px;
+    font-size: 14px;
+    color: var(--muted);
+    font-weight: 300;
+  }
+
+  .stats-strip {
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+  }
+  .stat {
+    flex: 1;
+    min-width: 110px;
+    padding: 18px 20px;
+    border-right: 1px solid var(--border);
+  }
+  .stat:last-child { border-right: none; }
+  .stat-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 5px;
+  }
+  .stat-value {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 26px;
+    color: var(--accent);
+    line-height: 1;
+  }
+  .stat-unit { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .stat-arrow { font-size: 11px; color: var(--accent2); margin-top: 2px; }
+
+  .main {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 36px 24px 0;
+  }
+
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 0.06em;
+    color: var(--text);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .week-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 10px;
+    margin-bottom: 40px;
+  }
+  .day-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .day-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+  }
+  .day-card.push::before { background: var(--push); }
+  .day-card.pull::before { background: var(--pull); }
+  .day-card.legs::before { background: var(--legs); }
+  .day-card.rest::before { background: var(--rest); }
+  .day-card.golf::before { background: var(--golf); }
+  .day-card:hover { border-color: #444; transform: translateY(-2px); }
+  .day-card.active { border-color: var(--accent); background: var(--surface2); }
+
+  .day-name {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .day-type {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    letter-spacing: 0.04em;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .day-card.push .day-type { color: var(--push); }
+  .day-card.pull .day-type { color: var(--pull); }
+  .day-card.legs .day-type { color: var(--legs); }
+  .day-card.rest .day-type { color: var(--rest); }
+  .day-card.golf .day-type { color: var(--golf); }
+  .day-meta { font-size: 11px; color: var(--muted); font-weight: 300; }
+
+  .detail-panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 28px;
+    margin-bottom: 40px;
+    min-height: 200px;
+  }
+  .detail-panel.hidden { display: none; }
+
+  .detail-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .detail-day-name {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .detail-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 36px;
+    letter-spacing: 0.04em;
+  }
+  .detail-badges { display: flex; gap: 8px; flex-wrap: wrap; }
+  .badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    padding: 4px 10px;
+    border-radius: 4px;
+    text-transform: uppercase;
+  }
+  .badge-time { background: rgba(232,255,71,0.12); color: var(--accent); border: 1px solid rgba(232,255,71,0.25); }
+  .badge-strength { background: rgba(255,107,71,0.12); color: var(--push); border: 1px solid rgba(255,107,71,0.25); }
+  .badge-cardio { background: rgba(71,196,255,0.12); color: var(--pull); border: 1px solid rgba(71,196,255,0.25); }
+  .badge-focus { background: rgba(180,127,255,0.12); color: var(--legs); border: 1px solid rgba(180,127,255,0.25); }
+
+  .exercise-section { margin-bottom: 20px; }
+  .exercise-section-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .exercise-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 2fr;
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(42,42,50,0.6);
+    align-items: start;
+  }
+  .exercise-row:last-child { border-bottom: none; }
+  .exercise-name { font-size: 14px; font-weight: 500; color: var(--text); }
+  .exercise-sets { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--accent); }
+  .exercise-reps { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--accent2); }
+  .exercise-note { font-size: 11px; color: var(--muted); font-weight: 300; }
+  .col-header {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    color: #444;
+    text-transform: uppercase;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 2px;
+  }
+
+  .nutrition-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 14px;
+    margin-bottom: 40px;
+  }
+  .nutrition-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 18px;
+  }
+  .nutrition-card-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .nutrition-number { font-family: 'Bebas Neue', sans-serif; font-size: 38px; color: var(--accent); line-height: 1; }
+  .nutrition-unit { font-size: 12px; color: var(--muted); margin-bottom: 8px; }
+  .nutrition-note { font-size: 12px; color: var(--muted); font-weight: 300; line-height: 1.5; }
+  .nutrition-bar { height: 4px; background: var(--border); border-radius: 2px; margin: 10px 0 6px; overflow: hidden; }
+  .nutrition-bar-fill { height: 100%; border-radius: 2px; background: var(--accent); }
+  .bar-labels { display: flex; justify-content: space-between; font-family: 'DM Mono', monospace; font-size: 9px; color: var(--muted); }
+
+  .protein-tracker {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 24px;
+    margin-bottom: 40px;
+  }
+  .protein-sources {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 12px;
+    margin-top: 16px;
+  }
+  .protein-source {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px;
+  }
+  .ps-name { font-size: 13px; font-weight: 500; margin-bottom: 6px; }
+  .ps-row { display: flex; justify-content: space-between; font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); margin-bottom: 2px; }
+  .ps-row span:last-child { color: var(--accent2); }
+
+  .tips-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 14px;
+    margin-bottom: 40px;
+  }
+  .tip-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 18px;
+    position: relative;
+    overflow: hidden;
+  }
+  .tip-number {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 72px;
+    color: rgba(255,255,255,0.03);
+    position: absolute;
+    top: -10px; right: 8px;
+    line-height: 1;
+    pointer-events: none;
+  }
+  .tip-icon { font-size: 20px; margin-bottom: 8px; }
+  .tip-title { font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: var(--accent); }
+  .tip-body { font-size: 12px; color: var(--muted); line-height: 1.6; font-weight: 300; }
+
+  .targets-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 40px;
+  }
+  .target-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+  }
+  .target-card-title { font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 0.04em; margin-bottom: 14px; color: var(--text); }
+  .target-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(42,42,50,0.6);
+    font-size: 13px;
+  }
+  .target-row:last-child { border-bottom: none; }
+  .target-label { color: var(--muted); }
+  .target-current { font-family: 'DM Mono', monospace; color: var(--text); }
+  .target-goal { font-family: 'DM Mono', monospace; color: var(--accent); }
+
+  .footer-note { text-align: center; font-size: 11px; color: #333; font-family: 'DM Mono', monospace; padding-top: 20px; letter-spacing: 0.1em; }
+
+  @media (max-width: 700px) {
+    header { padding: 24px 20px 20px; }
+    .main { padding: 20px 16px 0; }
+    .week-grid { grid-template-columns: repeat(4, 1fr); }
+    .targets-row { grid-template-columns: 1fr; }
+    .exercise-row { grid-template-columns: 2fr 1fr 1fr; }
+    .exercise-note { display: none; }
+    .exercise-name { font-size: 12px; }
+    .exercise-sets, .exercise-reps { font-size: 11px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-label">Personalized Program · v2 Updated</div>
+  <h1>TRAINING<br><span>SYSTEM</span></h1>
+  <div class="header-sub">171 lbs → 155–160 lbs &nbsp;|&nbsp; 21.7% BF → 15% BF &nbsp;|&nbsp; PPL · Wed Rest · Bike Cardio</div>
+</header>
+
+<div class="stats-strip">
+  <div class="stat">
+    <div class="stat-label">Current Weight</div>
+    <div class="stat-value">171</div>
+    <div class="stat-unit">lbs</div>
+    <div class="stat-arrow">→ 155–160 lbs</div>
+  </div>
+  <div class="stat">
+    <div class="stat-label">Body Fat</div>
+    <div class="stat-value">21.7%</div>
+    <div class="stat-unit">body fat</div>
+    <div class="stat-arrow">→ 15%</div>
+  </div>
+  <div class="stat">
+    <div class="stat-label">Lean Mass</div>
+    <div class="stat-value">127.4</div>
+    <div class="stat-unit">lbs muscle</div>
+    <div class="stat-arrow">preserve / gain</div>
+  </div>
+  <div class="stat">
+    <div class="stat-label">BMR</div>
+    <div class="stat-value">1700</div>
+    <div class="stat-unit">cal/day</div>
+    <div class="stat-arrow">TDEE ~2,500</div>
+  </div>
+  <div class="stat">
+    <div class="stat-label">Protein Target</div>
+    <div class="stat-value">130g</div>
+    <div class="stat-unit">per day</div>
+    <div class="stat-arrow">120–140g range</div>
+  </div>
+  <div class="stat">
+    <div class="stat-label">Fat Loss Target</div>
+    <div class="stat-value">~1lb</div>
+    <div class="stat-unit">per week</div>
+    <div class="stat-arrow">~500 cal deficit</div>
+  </div>
+</div>
+
+<div class="main">
+
+  <div class="section-title">Weekly Schedule</div>
+  <div style="font-size:12px;color:var(--muted);margin-bottom:16px;font-weight:300;">Click a day to expand the full workout. Wednesday is full rest. Golf days float — swap Sunday ↔ Saturday as needed.</div>
+
+  <div class="week-grid">
+    <div class="day-card push" onclick="showDay('push1')">
+      <div class="day-name">Monday</div>
+      <div class="day-type">PUSH</div>
+      <div class="day-meta">Chest / Shoulders / Tris</div>
+    </div>
+    <div class="day-card pull" onclick="showDay('pull1')">
+      <div class="day-name">Tuesday</div>
+      <div class="day-type">PULL</div>
+      <div class="day-meta">Back / Biceps / Rear Delt</div>
+    </div>
+    <div class="day-card rest" onclick="showDay('wed')">
+      <div class="day-name">Wednesday</div>
+      <div class="day-type">REST</div>
+      <div class="day-meta">Full rest / Golf</div>
+    </div>
+    <div class="day-card legs" onclick="showDay('legs1')">
+      <div class="day-name">Thursday</div>
+      <div class="day-type">LEGS</div>
+      <div class="day-meta">Quad-dominant</div>
+    </div>
+    <div class="day-card push" onclick="showDay('push2')">
+      <div class="day-name">Friday</div>
+      <div class="day-type">PUSH</div>
+      <div class="day-meta">Shoulder-dominant</div>
+    </div>
+    <div class="day-card pull" onclick="showDay('pull2')">
+      <div class="day-name">Saturday</div>
+      <div class="day-type">PULL</div>
+      <div class="day-meta">Deadlift-focus</div>
+    </div>
+    <div class="day-card legs" onclick="showDay('legs2')">
+      <div class="day-name">Sunday</div>
+      <div class="day-type">LEGS</div>
+      <div class="day-meta">Hip-dominant / Golf</div>
+    </div>
+  </div>
+
+  <div class="detail-panel hidden" id="detail-panel">
+    <div id="detail-content"></div>
+  </div>
+
+  <div class="section-title">Caloric Blueprint</div>
+  <div class="nutrition-grid">
+    <div class="nutrition-card">
+      <div class="nutrition-card-title">Daily Calories — Training Day</div>
+      <div class="nutrition-number">2,000</div>
+      <div class="nutrition-unit">cal/day target</div>
+      <div class="nutrition-bar"><div class="nutrition-bar-fill" style="width:80%"></div></div>
+      <div class="bar-labels"><span>BMR 1,700</span><span>TDEE ~2,500</span></div>
+      <div class="nutrition-note">~500 cal deficit from TDEE. Sustainable for ~1 lb/week fat loss without muscle loss.</div>
+    </div>
+    <div class="nutrition-card">
+      <div class="nutrition-card-title">Protein</div>
+      <div class="nutrition-number">130g</div>
+      <div class="nutrition-unit">minimum daily</div>
+      <div class="nutrition-bar"><div class="nutrition-bar-fill" style="width:75%; background: var(--accent2)"></div></div>
+      <div class="bar-labels"><span>0g</span><span>goal 130–140g</span></div>
+      <div class="nutrition-note">~1g per lb of lean mass (127.4 lbs). Critical for muscle preservation in a deficit.</div>
+    </div>
+    <div class="nutrition-card">
+      <div class="nutrition-card-title">Carbs</div>
+      <div class="nutrition-number">170g</div>
+      <div class="nutrition-unit">target range</div>
+      <div class="nutrition-bar"><div class="nutrition-bar-fill" style="width:60%; background: var(--legs)"></div></div>
+      <div class="bar-labels"><span>0g</span><span>~680 cal</span></div>
+      <div class="nutrition-note">Focus carbs around workouts. Prioritize oats, rice, and fruit over processed sources.</div>
+    </div>
+    <div class="nutrition-card">
+      <div class="nutrition-card-title">Fat</div>
+      <div class="nutrition-number">55g</div>
+      <div class="nutrition-unit">target range</div>
+      <div class="nutrition-bar"><div class="nutrition-bar-fill" style="width:50%; background: var(--push)"></div></div>
+      <div class="bar-labels"><span>0g</span><span>~495 cal</span></div>
+      <div class="nutrition-note">Don't go too low — essential for hormones. Eggs, olive oil, avocado, nuts.</div>
+    </div>
+  </div>
+
+  <div class="section-title">Protein Stack Breakdown</div>
+  <div class="protein-tracker">
+    <div style="font-size:13px;color:var(--muted);margin-bottom:4px;font-weight:300;">Your current sources mapped to daily targets</div>
+    <div class="protein-sources">
+      <div class="protein-source">
+        <div class="ps-name">🥤 Protein Shake (2 scoops)</div>
+        <div class="ps-row"><span>Calories</span><span>200</span></div>
+        <div class="ps-row"><span>Protein</span><span>40g</span></div>
+        <div class="ps-row"><span>% of target</span><span>~31%</span></div>
+      </div>
+      <div class="protein-source">
+        <div class="ps-name">🥛 Greek Yogurt</div>
+        <div class="ps-row"><span>Calories</span><span>90–170</span></div>
+        <div class="ps-row"><span>Protein</span><span>15–20g</span></div>
+        <div class="ps-row"><span>Tip</span><span style="color:var(--accent);font-size:10px;">Prefer 90 cal / 15g</span></div>
+      </div>
+      <div class="protein-source">
+        <div class="ps-name">🍗 Chicken</div>
+        <div class="ps-row"><span>6 oz breast</span><span>~52g protein</span></div>
+        <div class="ps-row"><span>Calories</span><span>~280</span></div>
+        <div class="ps-row"><span>Tip</span><span style="color:var(--accent);font-size:10px;">Aim for 6–8 oz/day</span></div>
+      </div>
+      <div class="protein-source">
+        <div class="ps-name">🍫 Protein Snacks</div>
+        <div class="ps-row"><span>Calories</span><span>~200</span></div>
+        <div class="ps-row"><span>Protein</span><span>~20g</span></div>
+        <div class="ps-row"><span>Daily total</span><span style="color:var(--accent);">~127–132g ✓</span></div>
+      </div>
+    </div>
+    <div style="margin-top:16px;background:rgba(232,255,71,0.05);border:1px solid rgba(232,255,71,0.15);border-radius:8px;padding:14px;">
+      <div style="font-size:12px;color:var(--accent);font-weight:600;margin-bottom:6px;">📌 Chicken is your flex variable</div>
+      <div style="font-size:12px;color:var(--muted);line-height:1.6;">Your shake + yogurt + snacks already gives you ~75–80g. Add 6 oz of chicken (~52g) and you hit 127–132g easily. On higher activity days (golf + gym), bump to 8 oz or add a second yogurt to hit 140g+.</div>
+    </div>
+  </div>
+
+  <div class="section-title">Progress Benchmarks</div>
+  <div class="targets-row">
+    <div class="target-card">
+      <div class="target-card-title">Body Composition</div>
+      <div class="target-row"><div class="target-label">Weight</div><div class="target-current">171 lbs</div><div class="target-goal">→ 155–160</div></div>
+      <div class="target-row"><div class="target-label">Body Fat</div><div class="target-current">21.7%</div><div class="target-goal">→ 15%</div></div>
+      <div class="target-row"><div class="target-label">Fat Mass</div><div class="target-current">37.1 lbs</div><div class="target-goal">→ ~23–24 lbs</div></div>
+      <div class="target-row"><div class="target-label">Lean Mass</div><div class="target-current">127.4 lbs</div><div class="target-goal">preserve → grow</div></div>
+      <div class="target-row"><div class="target-label">Timeline (1 lb/wk)</div><div class="target-current">—</div><div class="target-goal">~11–16 weeks</div></div>
+    </div>
+    <div class="target-card">
+      <div class="target-card-title">Strength Milestones</div>
+      <div class="target-row"><div class="target-label">Bench Press</div><div class="target-current">current baseline</div><div class="target-goal">+10–15 lbs</div></div>
+      <div class="target-row"><div class="target-label">Squat / Leg Press</div><div class="target-current">current baseline</div><div class="target-goal">+15–20 lbs</div></div>
+      <div class="target-row"><div class="target-label">Deadlift / RDL</div><div class="target-current">current baseline</div><div class="target-goal">+15–20 lbs</div></div>
+      <div class="target-row"><div class="target-label">Row (cable/barbell)</div><div class="target-current">current baseline</div><div class="target-goal">+10–15 lbs</div></div>
+      <div class="target-row"><div class="target-label">Overhead Press</div><div class="target-current">current baseline</div><div class="target-goal">+8–12 lbs</div></div>
+    </div>
+  </div>
+
+  <div class="section-title">Key Adjustments & Tips</div>
+  <div class="tips-grid">
+    <div class="tip-card">
+      <div class="tip-number">1</div>
+      <div class="tip-icon">⚡</div>
+      <div class="tip-title">Progressive Overload is #1</div>
+      <div class="tip-body">Track your lifts weekly. Add weight or a rep each session. In a deficit, maintaining strength = maintaining muscle. Don't chase soreness — chase progression.</div>
+    </div>
+    <div class="tip-card">
+      <div class="tip-number">2</div>
+      <div class="tip-icon">🚴</div>
+      <div class="tip-title">Bike Cardio Strategy</div>
+      <div class="tip-body">20 min post-lift at moderate resistance (Zone 2, ~130–145 BPM) burns ~180–260 cal. Keep it conversational. On leg days, drop resistance slightly to avoid compounding fatigue.</div>
+    </div>
+    <div class="tip-card">
+      <div class="tip-number">3</div>
+      <div class="tip-icon">😴</div>
+      <div class="tip-title">Wednesday Rest Matters</div>
+      <div class="tip-body">With Push Mon, Pull Tue, the Wednesday rest gives your upper body 48 hrs before Legs Thursday. This is a smart natural split — don't feel the urge to add anything on Wednesday.</div>
+    </div>
+    <div class="tip-card">
+      <div class="tip-number">4</div>
+      <div class="tip-icon">⛳</div>
+      <div class="tip-title">Golf as Active Recovery</div>
+      <div class="tip-body">Driving range (120 balls) = ~250–350 cal. A cart round = ~300–400 cal. Wednesday or Sunday work best. Hip hinge and rotational core work in the gym directly transfers to your swing.</div>
+    </div>
+    <div class="tip-card">
+      <div class="tip-number">5</div>
+      <div class="tip-icon">📊</div>
+      <div class="tip-title">Weigh Weekly, Not Daily</div>
+      <div class="tip-body">Daily weight swings 1–3 lbs from water, sodium, and carbs. Take a weekly Monday morning fasted weight. After 4 weeks you should see a clear ~1 lb/week downward trend.</div>
+    </div>
+    <div class="tip-card">
+      <div class="tip-number">6</div>
+      <div class="tip-icon">🔁</div>
+      <div class="tip-title">Deload Every 6–8 Weeks</div>
+      <div class="tip-body">Drop to 3–4 days, 60% of normal volume. At 6 days/week in a caloric deficit, accumulated fatigue is real. A deload week prevents injury and often leads to strength PRs the following week.</div>
+    </div>
+  </div>
+
+  <p class="footer-note">// v2 · Wed rest · no lunges or hip thrusts · stationary bike cardio throughout</p>
+
+</div>
+
+<script>
+const days = {
+  push1: {
+    name: 'Monday',
+    title: 'PUSH — Chest Dominant',
+    color: 'var(--push)',
+    badges: ['60 min total', '40 min strength', '20 min bike', 'Focus: Volume'],
+    sections: [
+      {
+        label: 'Compound Movements',
+        exercises: [
+          { name: 'Barbell Bench Press', sets: '4', reps: '6–8', note: 'Primary strength movement. Add weight when you hit 8 clean reps.' },
+          { name: 'Incline Dumbbell Press', sets: '3', reps: '8–10', note: 'Upper chest emphasis. Keep elbows ~45° to shoulders.' },
+          { name: 'Overhead Press (Barbell or DB)', sets: '3', reps: '8–10', note: 'Seated or standing. Brace core throughout.' },
+        ]
+      },
+      {
+        label: 'Isolation / Accessory',
+        exercises: [
+          { name: 'Cable Chest Fly (or Pec Deck)', sets: '3', reps: '12–15', note: 'Squeeze at peak contraction. Slow eccentric.' },
+          { name: 'Lateral Raises', sets: '3', reps: '12–15', note: 'Light weight, strict form. No body swinging.' },
+          { name: 'Tricep Pushdowns (rope)', sets: '3', reps: '12–15', note: 'Full extension at bottom. Keep elbows pinned.' },
+          { name: 'Overhead Tricep Extension', sets: '2', reps: '10–12', note: 'Long-head emphasis. Superset with pushdowns if short on time.' },
+        ]
+      },
+      {
+        label: 'Cardio Finisher — 20 min Stationary Bike',
+        exercises: [
+          { name: 'Stationary Bike — Steady State', sets: '—', reps: '20 min', note: 'Zone 2 (~130–145 BPM). Moderate resistance. Conversational pace. ~200–260 cal.' },
+        ]
+      }
+    ]
+  },
+  pull1: {
+    name: 'Tuesday',
+    title: 'PULL — Back Dominant',
+    color: 'var(--pull)',
+    badges: ['60 min total', '40 min strength', '20 min bike', 'Focus: Width + Thickness'],
+    sections: [
+      {
+        label: 'Compound Movements',
+        exercises: [
+          { name: 'Pull-Ups or Lat Pulldown', sets: '4', reps: '6–10', note: 'Bodyweight pull-ups if you can. Full ROM — dead hang to chin over bar.' },
+          { name: 'Barbell or Dumbbell Row', sets: '4', reps: '8–10', note: 'Drive elbow back, not out. Retract shoulder blade at top.' },
+          { name: 'Seated Cable Row', sets: '3', reps: '10–12', note: 'Chest tall, minimal sway. Feel the mid-back squeeze.' },
+        ]
+      },
+      {
+        label: 'Isolation / Accessory',
+        exercises: [
+          { name: 'Straight-Arm Pulldown', sets: '3', reps: '12–15', note: 'Isolates lats without bicep involvement. Great finisher.' },
+          { name: 'Face Pulls', sets: '3', reps: '15–20', note: 'External rotation. Critical for shoulder health and rear delt development.' },
+          { name: 'Dumbbell Hammer Curl', sets: '3', reps: '10–12', note: 'Brachialis focus. Neutral grip throughout.' },
+          { name: 'Incline DB Curl', sets: '2', reps: '10–12', note: 'Stretch at bottom. Great long-head bicep isolation.' },
+        ]
+      },
+      {
+        label: 'Cardio Finisher — 20 min Stationary Bike',
+        exercises: [
+          { name: 'Stationary Bike — Steady State', sets: '—', reps: '20 min', note: 'Zone 2. Keep resistance moderate. Upper body just worked — bike is easy on recovery. ~200–260 cal.' },
+        ]
+      }
+    ]
+  },
+  wed: {
+    name: 'Wednesday',
+    title: 'FULL REST',
+    color: 'var(--rest)',
+    badges: ['No Lifting', 'No Cardio', 'Optional Golf'],
+    sections: [
+      {
+        label: 'Why This Rest Day Works',
+        exercises: [
+          { name: 'Upper Body Recovery Window', sets: '—', reps: '—', note: 'Mon Push + Tue Pull back-to-back. Wed rest gives upper body 48 hrs before Thu Legs — optimal recovery.' },
+          { name: 'CNS Reset', sets: '—', reps: '—', note: 'At 6 days/week training in a caloric deficit, CNS fatigue accumulates. This midweek break is structural, not optional.' },
+        ]
+      },
+      {
+        label: 'Optional Activities',
+        exercises: [
+          { name: 'Golf (cart round or range)', sets: '—', reps: 'Optional', note: 'Low-impact. Counts as active recovery. ~250–400 cal depending on activity. Great Wednesday use.' },
+          { name: 'Light Walk (20–30 min)', sets: '—', reps: 'Optional', note: 'Promotes blood flow without adding training stress. Keep it easy.' },
+          { name: 'Stretching / Foam Rolling', sets: '—', reps: '10–15 min', note: 'Focus on chest, lats, shoulders from Mon/Tue. Hip flexors for Thursday legs.' },
+        ]
+      }
+    ]
+  },
+  legs1: {
+    name: 'Thursday',
+    title: 'LEGS — Quad Dominant',
+    color: 'var(--legs)',
+    badges: ['60 min total', '40 min strength', '20 min bike', 'Focus: Squat Pattern'],
+    sections: [
+      {
+        label: 'Compound Movements',
+        exercises: [
+          { name: 'Barbell Back Squat', sets: '4', reps: '6–8', note: 'Primary strength movement. Brace core, knees track toes, depth at least parallel.' },
+          { name: 'Leg Press', sets: '4', reps: '10–12', note: 'Replaces lunges. Foot position high = more glutes/hams. Low = more quad. Vary weekly.' },
+          { name: 'Goblet Squat', sets: '3', reps: '12–15', note: 'Replaces lunges. Dumbbell or kettlebell at chest. Upright torso, full depth. Great quad finisher.' },
+        ]
+      },
+      {
+        label: 'Isolation / Accessory',
+        exercises: [
+          { name: 'Leg Extension', sets: '3', reps: '12–15', note: 'Quad isolation. Slow eccentric (3 sec down). Really squeeze at top.' },
+          { name: 'Lying or Seated Leg Curl', sets: '3', reps: '10–12', note: 'Hamstring isolation. Control the weight on the way down.' },
+          { name: 'Standing Calf Raise', sets: '4', reps: '15–20', note: 'Full stretch at bottom. Calves respond to high volume and slow reps.' },
+        ]
+      },
+      {
+        label: 'Cardio Finisher — 20 min Stationary Bike',
+        exercises: [
+          { name: 'Stationary Bike — Lower Resistance', sets: '—', reps: '20 min', note: 'Drop resistance 1–2 levels vs other days. Quads are pre-fatigued. Zone 2, easy spin. ~160–220 cal.' },
+        ]
+      }
+    ]
+  },
+  push2: {
+    name: 'Friday',
+    title: 'PUSH — Shoulder Dominant',
+    color: 'var(--push)',
+    badges: ['60 min total', '40 min strength', '20 min bike', 'Focus: Shoulders + Tris'],
+    sections: [
+      {
+        label: 'Compound Movements',
+        exercises: [
+          { name: 'Seated DB Shoulder Press', sets: '4', reps: '8–10', note: 'Primary movement today. Full range of motion. Slight lean back OK.' },
+          { name: 'Incline Barbell or DB Press', sets: '3', reps: '10–12', note: 'Higher rep range than Monday. Hypertrophy focus, not max strength.' },
+          { name: 'Arnold Press', sets: '3', reps: '10–12', note: 'Rotational movement. Hits all three delt heads. Slower, controlled tempo.' },
+        ]
+      },
+      {
+        label: 'Isolation / Accessory',
+        exercises: [
+          { name: 'Cable Lateral Raise (single arm)', sets: '4', reps: '15–20', note: 'Constant cable tension beats dumbbells for side delt growth. Keep torso still.' },
+          { name: 'Chest Dips (weighted if possible)', sets: '3', reps: '8–12', note: 'Lean forward slightly for chest emphasis. Control the descent.' },
+          { name: 'Skull Crushers (EZ bar)', sets: '3', reps: '10–12', note: 'Slow eccentric. Protect elbows — don\'t go too heavy.' },
+          { name: 'Tricep Pushdowns (straight bar)', sets: '2', reps: '12–15', note: 'Vary grip/attachment from Monday for different stimulus.' },
+        ]
+      },
+      {
+        label: 'Cardio Finisher — 20 min Stationary Bike',
+        exercises: [
+          { name: 'Stationary Bike — Steady State', sets: '—', reps: '20 min', note: 'Zone 2. Upper body just worked — bike is perfect. Moderate resistance, consistent cadence. ~200–260 cal.' },
+        ]
+      }
+    ]
+  },
+  pull2: {
+    name: 'Saturday',
+    title: 'PULL — Deadlift Focus',
+    color: 'var(--pull)',
+    badges: ['60 min total', '40 min strength', '20 min bike', 'Focus: Posterior Chain'],
+    sections: [
+      {
+        label: 'Compound Movements',
+        exercises: [
+          { name: 'Romanian Deadlift (RDL)', sets: '4', reps: '6–8', note: 'Hinge pattern. Bar stays close to legs. Feel the hamstring stretch. This is your main hinge day.' },
+          { name: 'Wide-Grip Lat Pulldown', sets: '4', reps: '8–10', note: 'Slightly wider grip than Tuesday for more lat width emphasis.' },
+          { name: 'Single-Arm Dumbbell Row', sets: '3', reps: '8–10 each', note: 'Heavy. Brace on bench. Full stretch at bottom, full contraction at top.' },
+        ]
+      },
+      {
+        label: 'Isolation / Accessory',
+        exercises: [
+          { name: 'Cable Row (wide or neutral grip)', sets: '3', reps: '10–12', note: 'Vary grip from Tuesday to hit different mid-back areas.' },
+          { name: 'Reverse Pec Deck (rear delt fly)', sets: '3', reps: '12–15', note: 'Rear delt isolation. Critical for shoulder health and posture.' },
+          { name: 'Barbell or EZ Bar Curl', sets: '3', reps: '8–10', note: 'Heavier than Tuesday curls. Keep elbows forward for peak contraction.' },
+          { name: 'Concentration Curl', sets: '2', reps: '12', note: 'Full squeeze at top. Slow eccentric. Final bicep burnout.' },
+        ]
+      },
+      {
+        label: 'Cardio Finisher — 20 min Stationary Bike',
+        exercises: [
+          { name: 'Stationary Bike — Moderate Push', sets: '—', reps: '20 min', note: 'End of the training week — can push effort slightly. Bump resistance or cadence. ~220–280 cal.' },
+        ]
+      }
+    ]
+  },
+  legs2: {
+    name: 'Sunday',
+    title: 'LEGS — Hip Dominant',
+    color: 'var(--legs)',
+    badges: ['60 min total', '40 min strength', '20 min bike', 'Focus: Glutes + Hams'],
+    sections: [
+      {
+        label: 'Compound Movements',
+        exercises: [
+          { name: 'Conventional Deadlift', sets: '4', reps: '5–6', note: 'Full pull from floor. Different from RDL on Saturday — trains full posterior chain and back together. Heaviest leg day lift.' },
+          { name: 'Leg Press (wide stance)', sets: '4', reps: '10–12', note: 'Replaces hip thrust and Bulgarian split squat. Wide foot placement high on platform shifts load to glutes and hams.' },
+          { name: 'Sumo Squat (DB or barbell)', sets: '3', reps: '10–12', note: 'Replaces hip thrust. Wide stance, toes out. Loads glutes differently than back squat. Great hip-dominant pattern.' },
+        ]
+      },
+      {
+        label: 'Isolation / Accessory',
+        exercises: [
+          { name: 'Seated Leg Curl', sets: '3', reps: '10–12', note: 'Targets upper hamstring. Different angle than lying curl — train both across the week.' },
+          { name: 'Abductor Machine', sets: '3', reps: '15–20', note: 'Hip stability and glute med. Also directly supports golf hip rotation and follow-through.' },
+          { name: 'Seated Calf Raise', sets: '4', reps: '12–15', note: 'Hits soleus (seated) vs gastrocnemius (standing on Thu). Full calf development across both days.' },
+        ]
+      },
+      {
+        label: 'Cardio Finisher — 20 min Stationary Bike',
+        exercises: [
+          { name: 'Stationary Bike — Easy Spin', sets: '—', reps: '20 min', note: 'Post-heavy-leg day — keep resistance low. Zone 1–2. Flush the legs, promote recovery. ~160–210 cal.' },
+        ]
+      }
+    ]
+  }
+};
+
+function showDay(dayKey) {
+  const day = days[dayKey];
+  const panel = document.getElementById('detail-panel');
+  const content = document.getElementById('detail-content');
+
+  const badgeHTML = day.badges.map(b => {
+    if (b.includes('min') || b.includes('hr') || b.includes('bike') || b.includes('Bike')) return `<span class="badge badge-time">${b}</span>`;
+    if (b.includes('strength') || b.includes('Lift')) return `<span class="badge badge-strength">${b}</span>`;
+    if (b.includes('cardio') || b.includes('Cardio') || b.includes('Recovery') || b.includes('Golf') || b.includes('Lifting')) return `<span class="badge badge-cardio">${b}</span>`;
+    return `<span class="badge badge-focus">${b}</span>`;
+  }).join('');
+
+  let sectionsHTML = day.sections.map(section => `
+    <div class="exercise-section">
+      <div class="exercise-section-title">${section.label}</div>
+      <div class="exercise-row">
+        <div class="col-header">Exercise</div>
+        <div class="col-header">Sets</div>
+        <div class="col-header">Reps</div>
+        <div class="col-header">Notes</div>
+      </div>
+      ${section.exercises.map(ex => `
+        <div class="exercise-row">
+          <div class="exercise-name">${ex.name}</div>
+          <div class="exercise-sets">${ex.sets}</div>
+          <div class="exercise-reps">${ex.reps}</div>
+          <div class="exercise-note">${ex.note}</div>
+        </div>
+      `).join('')}
+    </div>
+  `).join('');
+
+  content.innerHTML = `
+    <div class="detail-header">
+      <div>
+        <div class="detail-day-name">${day.name}</div>
+        <div class="detail-title" style="color:${day.color}">${day.title}</div>
+      </div>
+      <div class="detail-badges">${badgeHTML}</div>
+    </div>
+    ${sectionsHTML}
+  `;
+
+  panel.classList.remove('hidden');
+  panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+  document.querySelectorAll('.day-card').forEach(c => c.classList.remove('active'));
+}
+</script>
+</body>
+</html>
